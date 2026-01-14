@@ -1,8 +1,6 @@
 # Escrow Task
 
----
-
-### Get it running
+## Get it running
 
 1. **Install dependencies**
 ```bash
@@ -44,9 +42,7 @@ npm test         # Run tests
 npm run test:watch # Run tests in watch mode
 ```
 
----
-
-### Architecture
+## Architecture
 
 **Tech Stack**: Node.js + Express + PostgreSQL (Neon) + Vanilla JS frontend
 
@@ -78,15 +74,14 @@ See [src/init-db.ts](src/init-db.ts) for the complete database schema and initia
 - POST `/api/escrow/action/:id` - Perform state transition
 - GET `/api/escrow/events` - Get event log
 
-**Invariants**:
+## Invariants
 - **Event immutability**: Once written, events are never modified or deleted
 - **Version monotonicity**: Event versions strictly increase (optimistic locking)
 - **State derivation**: Current state is always computed by replaying all events
 - **Permission enforcement**: Only authorized roles can trigger specific transitions (no explicit auth methods, the user id is passed in the request)
 
----
 
-### Learnings
+## Learnings
 
 **Iteration 1: The "Last Event" Approach**
 
@@ -116,10 +111,8 @@ This approach provides strong consistency while maintaining a complete audit tra
 
 Event sourcing requires more work upfront, but having a complete history of every state change makes debugging and understanding the system much easier.
 
----
 
-### Improvements
+## Improvements
 1. The tests are not exhaustive, more tests are needed
 2. The website definitely needs some work, it's completely vibecoded
 
----
