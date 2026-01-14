@@ -457,7 +457,7 @@
       const actions = [];
       const roleMap = {
         'PROPOSED': { buyer: ['FUNDED'], seller: [], arbiter: [] },
-        'FUNDED': { buyer: ['DISPUTED'], seller: ['DISPUTED'], arbiter: [] },
+        'FUNDED': { buyer: ['DISPUTED'], seller: ['DISPUTED'], arbiter: ['RELEASED'] },
         'DISPUTED': { buyer: [], seller: [], arbiter: ['RELEASED', 'REFUNDED'] },
         'RELEASED': { buyer: [], seller: [], arbiter: [] },
         'REFUNDED': { buyer: [], seller: [], arbiter: [] }

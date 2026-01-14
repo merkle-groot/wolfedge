@@ -65,6 +65,8 @@ npm run test:watch # Run tests in watch mode
 - `escrow_metadata`: Escrow contracts (amount, participants)
 - `escrow_events`: Immutable event log with versioning
 
+See [src/init-db.ts](src/init-db.ts) for the complete database schema and initialization logic.
+
 **API Endpoints**:
 - POST `/api/escrow/metadata` - Create escrow
 - GET `/api/escrow/metadata` - List all escrows
