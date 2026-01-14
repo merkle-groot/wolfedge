@@ -9,6 +9,12 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'wolfedge',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
+  ssl: {
+    rejectUnauthorized: false // Required for Neon
+  },
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000, // Increased from 2000 to 10000 for Neon
 });
 
 describe('Escrow Tests', () => {
@@ -116,7 +122,10 @@ describe('Escrow Tests', () => {
       ]);
 
       // One should succeed, one should fail
-      expect([res1.status, res2.status]).not.toContain(500);
+      const statuses = [res1.status, res2.status];
+      expect(statuses).toContain(201); // At least one success
+      expect(statuses).toContain(400); // At least one failure (invalid transition due to race)
+      expect(statuses).not.toContain(500); // No server errors
 
       // Final state should be valid (no corrupted state)
       const events = await pool.query('SELECT * FROM escrow_events WHERE escrow_id = -1 ORDER BY id');
