@@ -1,6 +1,11 @@
-import express, { Request, Response, Application } from 'express';
-import pool from './db';
+import express, { Application } from 'express';
+import { initDB } from './init-db.js';
 import 'dotenv/config';
+import apiRouter from './api/index.js';
+
+console.log("Setting up db...");
+await initDB();
+console.log("Db successfully set!");
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -8,28 +13,8 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 
-// Dummy route
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Welcome to the API!' });
-});
-
-app.get('/api/hello', (req: Request, res: Response) => {
-  res.json({ message: 'Hello, World!' });
-});
-
-// Database test route
-app.get('/api/test-db', async (req: Request, res: Response) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({
-      message: 'Database connection successful',
-      timestamp: result.rows[0].now
-    });
-  } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).json({ error: 'Database connection failed' });
-  }
-});
+// Mount API routes
+app.use(apiRouter);
 
 // Start server
 app.listen(PORT, () => {
