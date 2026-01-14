@@ -45,15 +45,6 @@ async function createTableIfNotExists() {
     await client.connect();
     await client.query('BEGIN');
 
-    // Create ENUM type first (outside of IF NOT EXISTS for tables)
-    const createEnumType = `
-      DO $$ BEGIN
-        CREATE TYPE STATE AS ENUM ('PROPOSED', 'FUNDED', 'RELEASED', 'DISPUTED', 'REFUNDED');
-      EXCEPTION
-        WHEN duplicate_object THEN null;
-      END $$;
-    `;
-    await client.query(createEnumType);
 
     const createUsersTable = `
       CREATE TABLE IF NOT EXISTS escrow_users (
@@ -91,12 +82,19 @@ async function createTableIfNotExists() {
 
     const createEventsTable = `
       CREATE TABLE IF NOT EXISTS escrow_events (
-        escrow_id INTEGER,
-        state STATE NOT NULL,
+        id SERIAL PRIMARY KEY,
+        escrow_id INTEGER NOT NULL,
+        event_type VARCHAR(50) NOT NULL,
+        user_id INTEGER NOT NULL,
+        event_data JSONB,
+        version INTEGER NOT NULL DEFAULT 1,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT escrow_constraint
           FOREIGN KEY(escrow_id)
-          REFERENCES escrow_metadata(escrow_id)
+          REFERENCES escrow_metadata(escrow_id),
+        CONSTRAINT user_constraint
+          FOREIGN KEY(user_id)
+          REFERENCES escrow_users(user_id)
       );
     `;
 
@@ -114,7 +112,7 @@ async function createTableIfNotExists() {
     }
 
     await client.query('COMMIT');
-    console.log('\nEvent table created successfully!');
+    console.log('Event table created successfully!');
 
   } catch (error) {
     await client.query('ROLLBACK');

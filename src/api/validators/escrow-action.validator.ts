@@ -1,15 +1,6 @@
 import { z } from 'zod';
 
-export const EscrowStateEnumValues = {
-  PROPOSED: "PROPOSED",
-  FUNDED: "FUNDED",
-  RELEASED: "RELEASED",
-  DISPUTED: "DISPUTED",
-  REFUNDED: "REFUNDED"
-}
-
-// Define the state enum
-export const EscrowStateEnum = z.enum([
+export const EscrowStatusEnum = z.enum([
   'PROPOSED',
   'FUNDED',
   'RELEASED',
@@ -17,10 +8,28 @@ export const EscrowStateEnum = z.enum([
   'REFUNDED'
 ]);
 
+export const EventTypeEnum = z.enum([
+  'EscrowProposed',
+  'EscrowFunded',
+  'EscrowReleased',
+  'EscrowDisputed',
+  'EscrowRefunded'
+]);
+
+// Maps status to event type
+export const statusToEventType: Record<string, string> = {
+  'PROPOSED': 'EscrowProposed',
+  'FUNDED': 'EscrowFunded',
+  'RELEASED': 'EscrowReleased',
+  'DISPUTED': 'EscrowDisputed',
+  'REFUNDED': 'EscrowRefunded'
+};
+
 export const createEscrowEventSchema = z.object({
-  action: EscrowStateEnum,
-  user_id: z.number().int().nonnegative('User ID must be a non-negative integer'),
+  action: EscrowStatusEnum,
+  user_id: z.coerce.number().int().nonnegative('User ID must be a non-negative integer'),
 });
 
 export type CreateEscrowEventInput = z.infer<typeof createEscrowEventSchema>;
-export type EscrowState = z.infer<typeof EscrowStateEnum>;
+export type EscrowStatus = z.infer<typeof EscrowStatusEnum>;
+export type EventType = z.infer<typeof EventTypeEnum>;
