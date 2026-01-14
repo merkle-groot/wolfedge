@@ -1,44 +1,16 @@
 import { Client } from 'pg';
 import 'dotenv/config';
 
-async function createDatabaseIfNotExists() {
-  const client = new Client({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD,
-    database: 'postgres', // Must connect to default database to create a new one
-  });
-
-  try {
-    await client.connect();
-
-    // Check if database exists
-    const checkDbQuery = 'SELECT 1 FROM pg_database WHERE datname = $1';
-    const result = await client.query(checkDbQuery, [process.env.DB_NAME || 'wolfedge']);
-
-    if (result.rows.length === 0) {
-      // Database doesn't exist, create it
-      await client.query(`CREATE DATABASE ${process.env.DB_NAME || 'wolfedge'}`);
-      console.log(`Database "${process.env.DB_NAME || 'wolfedge'}" created successfully`);
-    } else {
-      console.log(`Database "${process.env.DB_NAME || 'wolfedge'}" already exists`);
-    }
-  } catch (error) {
-    console.error('Error creating database:', error);
-    throw error;
-  } finally {
-    await client.end();
-  }
-}
-
 async function createTableIfNotExists() {
   const client = new Client({
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432'),
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME || 'wolfedge',
+    database: process.env.DB_NAME || 'postgres',
+    ssl: {
+      rejectUnauthorized: false // Required for Neon
+    }
   });
 
   try {
@@ -124,6 +96,6 @@ async function createTableIfNotExists() {
 }
 
 export const initDB = async() => {
-  await createDatabaseIfNotExists();
+  // await createDatabaseIfNotExists();
   await createTableIfNotExists();
 } 

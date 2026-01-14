@@ -8,9 +8,12 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'wolfedge',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
+  ssl: {
+    rejectUnauthorized: false // Required for Neon
+  },
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000, // Increased from 2000 to 10000 for Neon
 });
 
 // Test database connection
