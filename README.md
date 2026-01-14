@@ -85,7 +85,7 @@ See [src/init-db.ts](src/init-db.ts) for the complete database schema and initia
 
 **Iteration 1: The "Last Event" Approach**
 
-The initial implementation used the last event's type as the current state. This worked functionally but defeated the purpose of event sourcing—there was no audit trail, no ability to reconstruct how the system reached a given state, and limited debugging capabilities.
+The initial implementation used the last event's type as the current state. This worked functionally but defeated the purpose of event sourcing, there was no audit trail, no ability to reconstruct how the system reached a given state, and limited debugging capabilities.
 
 **Iteration 2: Proper Event Replay**
 
