@@ -51,7 +51,7 @@ npm run test:watch # Run tests in watch mode
 |-----------|----------|------------------|-------------|
 | PROPOSED | FUNDED | Buyer | Buyer deposits funds into escrow |
 | FUNDED | DISPUTED | Buyer, Seller | Either party raises a dispute |
-| FUNDED | RELEASED | Seller | Seller confirms delivery, releases funds |
+| FUNDED | RELEASED | Arbiter | Arbiter releases funds to seller |
 | DISPUTED | RELEASED | Arbiter | Arbiter resolves dispute in seller's favor |
 | DISPUTED | REFUNDED | Arbiter | Arbiter resolves dispute in buyer's favor |
 | RELEASED | - | - | Terminal state (funds with seller) |
